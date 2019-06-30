@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>首页</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/nprogress.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/font-awesome.min.css">
+    <link rel="apple-touch-icon-precomposed" href="/static/images/icon.png">
+    <link rel="shortcut icon" href="/static/images/favicon.ico">
+    <script src="/static/js/jquery-2.1.4.min.js"></script>
+    <script src="/static/js/nprogress.js"></script>
+    <script src="/static/js/jquery.lazyload.min.js"></script>
+</head>
+<body class="user-select">
+<header class="header">
+    <nav class="navbar navbar-default" id="navbar">
+        <div class="container">
+            <div class="collapse navbar-collapse" id="header-navbar">
+                <ul class="nav navbar-nav navbar-right">
+                        <li><a data-cont="首页" title="首页" href="/">首页</a></li>
+                        <li><a data-cont="热门话题" title="热门话题" href="/topic/list.html">热门话题</a></li>
+                        <li><a data-cont="注册" title="注册" href="/user/register.html">注册</a></li>
+                        <li><a data-cont="登录" title="登录" href="/user/login.html">登录</a></li>
+                        <li><a data-cont="发布" title="发布" href="/weibo/publish.html">发布</a></li>
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+</header>
+<section class="container">
+    <div  class="content-wrap">
+        <div id="contentInsert" class="content">
+            <div id="focusslide" class="carousel slide" data-ride="carousel">
+                <ol class="carousel-indicators">
+                    <li data-target="#focusslide" data-slide-to="0" class="active"></li>
+                    <li data-target="#focusslide" data-slide-to="1"></li>
+                </ol>
+                <div class="carousel-inner" role="listbox">
+                    <div class="item active">
+                        <a href="#" target="_blank" title="今日热搜" >
+                            <img src="/static/images/todaysearch.jpeg" alt="今日热搜" class="img-responsive"></a>
+                    </div>
+                    <div class="item">
+                        <a href="#" target="_blank" title="热门小说" >
+                            <img src="/static/images/hotbook.jpg" alt="热门小说" class="img-responsive"></a>
+                    </div>
+                </div>
+                <a class="left carousel-control" href="#focusslide" role="button" data-slide="prev" rel="nofollow">
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                    <span class="sr-only">上一个</span>
+                </a>
+                <a class="right carousel-control" href="#focusslide" role="button" data-slide="next" rel="nofollow">
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                    <span class="sr-only">下一个</span>
+                </a>
+            </div>
+            <div  class="title">
+                 <h3>最新微博</h3>
+            </div>
+
+            <article class="excerpt excerpt-1">
+                <a class="focus" href="#" target="_blank">
+                    <img class="thumb" data-original="/static/images/hotfilm.jpg" src="/static/images/hotfilm.jpg" style="display:inline">
+                </a>
+                <p class="meta">
+                    <time class="time"><i class="glyphicon glyphicon-time"></i>2019-04-20</time>
+                    <span id="likeSpan'+listArray[i].id+'" class="views"><i   data-id="'+listArray[i].id+'"  class="likeclass glyphicon glyphicon-heart"></i>20</span>
+                    <a class="comment" href="#comment" title="评论" target="_blank"><i class="glyphicon glyphicon-comment"></i>500</a>
+                </p>
+                <p class="note">What's that</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+
+</body>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/jquery.ias.js"></script>
+<script src="/static/js/scripts.js"></script>
+</html>
+
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+        $.ajax({
+            type:"GET",
+            url:"/weibo/list",
+            success:function(data){
+                if(data.success){
+                    var listArray = data.data;
+                    for(var i = 0; i < listArray.length;i++){
+                        var dom = '<article class="excerpt excerpt-1"> <a class="focus" href="/weibo/get.html?id='+listArray[i].id+'" target="_blank">\
+                            <img class="thumb" data-original="'+listArray[i].img_url+'" src="'+listArray[i].img_url+'" style="display:inline">\
+                        </a>\
+                        <p class="meta">\
+                                <time class="time"><i class="glyphicon glyphicon-time"></i>'+listArray[i].create_time+'</time>\
+                                <span id="likeSpan'+listArray[i].id+'" class="views"><i   data-id="'+listArray[i].id+'"  class="likeclass glyphicon glyphicon-heart"></i>'+listArray[i].like_count+'</span>\
+                                <a class="comment" href="#comment" title="评论" target="_blank"><i class="glyphicon glyphicon-comment"></i>'+listArray[i].remark_count+'</a>\
+                                </p>\
+                                <p class="note">'+listArray[i].content+'</p>\
+                                </article>';
+
+                        $("#contentInsert").append($(dom));
+                    }
+                    $(".likeclass").on("click",function() {
+                        var weiboId = $(this).data("id");
+                        $.ajax({
+                            type: "POST",
+                            url: "/weibo/like",
+                            data: {
+                                "weiboId": weiboId
+                            },
+                            success: function (data) {
+                                if (data.success) {
+                                    window.location.reload();
+                                } else {
+                                    alert(data.data);
+                                }
+
+                            },
+                            error: function (data) {
+                                alert("获取最新微博失败，原因为" + data.responseText);
+                            }
+                        });
+                    });
+
+                }else{
+                    alert(data.data);
+                }
+
+            },
+            error:function(data){
+                alert("获取最新微博失败，原因为"+data.responseText);
+            }
+
+
+        });
+
+
+
+
+    });
+
+</script>

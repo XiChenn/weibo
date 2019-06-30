@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://dubbo.apache.org/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+            http://dubbo.apache.org/schema/dubbo
+            http://dubbo.apache.org/schema/dubbo/dubbo.xsd">
+
+    <!--dubbo服务方的应用名-->
+    <dubbo:application name="weiboservice"/>
+
+    <!--指定dubbo注册中心的服务器地址-->
+    <dubbo:registry address="zookeeper://127.0.0.1:2183"/>
+
+    <!--指定dubbo协议被consumer连接的端口号-->
+    <dubbo:protocol name="dubbo" port="20881"/>
+
+    <dubbo:service interface="com.example.weibohuati.weiboservice.facade.TestWeiboService" ref="testWeiboService"/>
+
+    <bean id="testWeiboService" class="com.example.weibohuati.service.impl.TestWeiboServiceImpl"/>
+
+    <dubbo:service interface="com.example.weibohuati.weiboservice.facade.WeiboService" ref="weiboService"/>
+
+    <bean id="weiboService" class="com.example.weibohuati.service.impl.WeiboServiceImpl"/>
+
+    <dubbo:service interface="com.example.weibohuati.weiboservice.facade.TopicService" ref="topicService"/>
+
+    <bean id="topicService" class="com.example.weibohuati.service.impl.TopicServiceImpl"/>
+
+</beans>
